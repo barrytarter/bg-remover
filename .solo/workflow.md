@@ -9,21 +9,21 @@ grant authority to merge, release or alter repository settings.
   Dockerfiles (`Dockerfile.ubuntu`, `Dockerfile.ubuntu-arm64`); macOS builds natively.
 - There is no unit-test suite in the repository.
 
-## Hard gate
+## CI checks
 
-The pull request's own CI is the gate. There is no separate local full suite.
+Changes are checked by the pull request's own CI. There is no separate local full suite.
 
 - Workflow: `.github/workflows/build.yml` ("Build Multi-Platform Binaries").
 - Triggers: `pull_request` targeting `main`, `v*` tag pushes, and `workflow_dispatch`.
-- Required checks (matrix-generated names): `Build ubuntu`, `Build linux-arm64`,
-  `Build macos`. Each builds the platform binary and verifies it and its checksum.
-- A missing or red build check is a hold, not a waived gate.
+- Build checks (matrix-generated names): `Build ubuntu`, `Build linux-arm64`,
+  `Build macos`. Each builds the platform binary, lists and inspects it, and generates a
+  SHA256 checksum.
+- The expected result is all three build checks passing for the pull request.
 
 ## Release
 
 - The `release` job runs only for tags or manual dispatch and publishes the GitHub release.
-- Release, tag and dispatch operations are maintainer-only and are never part of a
-  workflow-change pull request.
+- Release, tag and dispatch operations are not part of a workflow-change pull request.
 
 ## Runner selection
 
@@ -41,5 +41,4 @@ The pull request's own CI is the gate. There is no separate local full suite.
 
 ## Contribution notes
 
-- Open pull requests as drafts; the maintainers decide readiness and merging.
-- Keep matrix keys, job ids and check names stable, since they identify required checks.
+- Keep matrix keys, job ids and check names stable, since they identify the CI checks.
